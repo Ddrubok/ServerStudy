@@ -6,30 +6,41 @@
 
 #include<thread>
 
-void HelloThread()
+int32 sum = 0;
+
+void Add()
 {
-	cout << "Hello Thread" << endl;
+	for (int32 i = 0; i < 1000000; i++)
+	{
+		sum++;
+	}
 }
 
-void HelloThread_2(int32 num)
+
+void Sub()
 {
-	cout << num << endl;
+	for (int32 i = 0; i < 1000000; i++)
+	{
+		sum--;
+	}
 }
 
 int main()
 {
-	vector<std::thread> v;
+	Add();
+	Sub();
+	cout << sum << endl;
 
-	for (int32 i = 0; i < 10; i++)
-	{
-		v.push_back(std::thread(HelloThread_2, i));
-	}
-	cout << "Hello Main" << endl;
-	
-	for (int32 i = 0; i < 10; i++)
-	{
-		if (true == v[i].joinable())
-			v[i].join();// 그 스레드 끝날때 까지 대기한다.
-	}
-	
+	std::thread t1(Add);
+	std::thread t2(Sub);
+
+	if (true == t1.joinable())
+		t1.join();
+
+	if (true == t2.joinable())
+		t2.join();
+
+	cout << sum << endl;
+
+	return 0;
 }
