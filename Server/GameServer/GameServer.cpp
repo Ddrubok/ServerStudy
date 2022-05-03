@@ -5,14 +5,19 @@
 #include "CorePch.h"
 
 #include<thread>
+#include<atomic>
 
-int32 sum = 0;
+// atomic atom(원자)
+// All-Or_Nothing
+//DB
+atomic<int32> sum = 0;
 
 void Add()
 {
 	for (int32 i = 0; i < 1000000; i++)
 	{
-		sum++;
+		//sum++;
+		sum.fetch_add(1);
 	}
 }
 
@@ -21,15 +26,13 @@ void Sub()
 {
 	for (int32 i = 0; i < 1000000; i++)
 	{
-		sum--;
+		//sum--;
+		sum.fetch_add(-1);
 	}
 }
 
 int main()
 {
-	Add();
-	Sub();
-	cout << sum << endl;
 
 	std::thread t1(Add);
 	std::thread t2(Sub);
