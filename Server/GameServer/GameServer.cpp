@@ -4,7 +4,32 @@
 #include <iostream>
 #include "CorePch.h"
 
+#include<thread>
+
+void HelloThread()
+{
+	cout << "Hello Thread" << endl;
+}
+
+void HelloThread_2(int32 num)
+{
+	cout << num << endl;
+}
+
 int main()
 {
-    HelloWorld();
+	vector<std::thread> v;
+
+	for (int32 i = 0; i < 10; i++)
+	{
+		v.push_back(std::thread(HelloThread_2, i));
+	}
+	cout << "Hello Main" << endl;
+	
+	for (int32 i = 0; i < 10; i++)
+	{
+		if (true == v[i].joinable())
+			v[i].join();// 그 스레드 끝날때 까지 대기한다.
+	}
+	
 }
