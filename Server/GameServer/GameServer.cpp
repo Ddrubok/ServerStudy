@@ -6,41 +6,84 @@
 #include<thread>
 #include<atomic>
 #include <mutex>
-#include"AccountManger.h"
-#include "UserManger.h"
 
-void Fun1()
+
+class Spinlock
 {
-	for (int i = 0; i < 100; i++)
+public:
+	void lock()
 	{
-		UserManger::Instance()->ProcessSave();
+		//CAS (Compare-And-Swap)
+
+		bool expected = false;
+		bool desired = true;
+
+		//CAS의사코드
+		/*if (_locked == expected)
+		{
+			expected = _locked;
+			_locked = desired;
+			return true;
+		}
+		else
+		{
+			expected = _locked;
+			return false;
+		}*/
+
+		
+
+		while (_locked.compare_exchange_strong(expected,desired)==false)
+		{
+			expected = false;
+		}
+	}
+
+	void unlock()
+	{
+		_locked.store(false);
+	}
+
+private:
+	atomic<bool> _locked = false;
+};
+
+//volatile 최적화 하지마라
+
+int32 sum = 0;
+
+mutex m;
+
+Spinlock spinlock;
+
+void Add()
+{
+	for (int32 i = 0; i < 100000; i++)
+	{
+		lock_guard<Spinlock> guard(spinlock);
+		sum++;
 	}
 }
 
-
-void Fun2()
+void Sub()
 {
-	for (int i = 0; i < 100; i++)
+	for (int32 i = 0; i < 100000; i++)
 	{
-		AccountManger::Instance()->ProcessLogin();
+		lock_guard<Spinlock> guard(spinlock);
+		sum--;
 	}
 }
+
 
 int main()
 {
-	std::thread t1(Fun1);
-	std::thread t2(Fun2);
+	thread t1(Add);
+	thread t2(Sub);
 
 	t1.join();
 	t2.join();
-	cout << "Jobs Done" << endl;
 
-	mutex m1,m2;
-
-	std::lock(m1, m2);
-
-	lock_guard<mutex> g1(m1, std::adopt_lock);
-	lock_guard<mutex> g2(m2, std::adopt_lock);
+	cout << sum;
 
 	return 0;
 }
