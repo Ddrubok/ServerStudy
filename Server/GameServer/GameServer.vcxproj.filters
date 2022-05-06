@@ -12,9 +12,25 @@
     <ClCompile Include="GameServer.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="Pch.cpp" />
+    <ClCompile Include="UserManger.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountManger.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Pch.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Pch.h" />
+    <ClInclude Include="UserManger.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="AccountManger.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Pch.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

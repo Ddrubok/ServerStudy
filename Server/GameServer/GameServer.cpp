@@ -3,68 +3,44 @@
 #include "Pch.h"
 #include <iostream>
 #include "CorePch.h"
-
 #include<thread>
 #include<atomic>
 #include <mutex>
+#include"AccountManger.h"
+#include "UserManger.h"
 
-// atomic atom(원자)
-// All-Or_Nothing
-//DB
-vector<int> v;
-
-//Mutual Exclusive (상호배타적)
-mutex m;
-
-template<typename T>
-class LockGuard
+void Fun1()
 {
-public:
-	LockGuard(T& m)
+	for (int i = 0; i < 100; i++)
 	{
-		_mutex = &m;
-		_mutex->lock();
-	}
-	~LockGuard()
-	{
-		_mutex->unlock();
-	}
-
-private:
-	T* _mutex;
-};
-
-//재귀적으로 lock을 할 수 있는것이 큰 게임에서 유리하다.
-
-void Push()
-{
-	for (int32 i = 0; i < 100000; i++)
-	{
-		// Lock()은 한 스레드가 접근했을 때 다른 스레드의 접근을 막는다.?
-		//unlock()다른 스레드의 접근을 허용한다
-
-		LockGuard<std::mutex> d(m);
-		v.push_back(i);
-
-		
-		
+		UserManger::Instance()->ProcessSave();
 	}
 }
 
 
+void Fun2()
+{
+	for (int i = 0; i < 100; i++)
+	{
+		AccountManger::Instance()->ProcessLogin();
+	}
+}
 
 int main()
 {
-	std::thread t1(Push);
-	std::thread t2(Push);
+	std::thread t1(Fun1);
+	std::thread t2(Fun2);
 
-	if (t1.joinable())
-		t1.join();
+	t1.join();
+	t2.join();
+	cout << "Jobs Done" << endl;
 
-	if (t2.joinable())
-		t2.join();
+	mutex m1,m2;
 
-	cout << v.size() << endl;
+	std::lock(m1, m2);
+
+	lock_guard<mutex> g1(m1, std::adopt_lock);
+	lock_guard<mutex> g2(m2, std::adopt_lock);
 
 	return 0;
 }
