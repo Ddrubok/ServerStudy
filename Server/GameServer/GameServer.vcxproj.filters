@@ -21,6 +21,8 @@
     <ClCompile Include="Pch.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="ConcurrentQueue.cpp" />
+    <ClCompile Include="ConcurrentStack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserManger.h">
@@ -32,5 +34,7 @@
     <ClInclude Include="Pch.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ConcurrentQueue.h" />
+    <ClInclude Include="ConcurrentStack.h" />
   </ItemGroup>
 </Project>
