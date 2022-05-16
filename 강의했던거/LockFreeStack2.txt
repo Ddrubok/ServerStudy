@@ -47,13 +47,13 @@ class LockFreeStack
 {
 	struct Node
 	{
-		Node(const T& value) : data(make_shared<T>(value), next(nullptr)
+		Node(const T& value) : data(value), next(nullptr)
 		{
 
 		}
 
-		shared_ptr<T> data;
-		shared_ptr<Node>next;
+		T data;
+		Node* next;
 
 	};
 
@@ -98,16 +98,19 @@ public:
 
 	void TryDelete(Node* oldHead)
 	{
-		
+		//나 외ㅣ에 있나?
 
 		if (_popCount == 1)
 		{
+			// 나 혼자임
 			
+			//이왕 혼자인거 삭제 예약된 다른 데이터들도 삭제해보자.
 			Node* node = _pendingList.exchange(nullptr);
 
 			if (--_popCount == 0)
 			{
-				
+				//중간에 끼어든 얘가 없음
+				//끼어들어도 상관없음 분리됨
 				DeletNodes(node);
 			}
 			else if(node)
@@ -115,12 +118,12 @@ public:
 				ChainPendingNodeList(node);
 			}
 
-			
+			//so 내 데이터 삭제
 			delete oldHead;
 		}
 		else
 		{
-			
+			//누가 끼어들었음 다시 갖다 놓아야함.
 			ChainPendingNodeList(oldHead);
 			--_popCount;
 		}
@@ -162,8 +165,8 @@ public:
 private:
 	atomic<Node*> _head;
 
-	atomic<uint32> _popCount = 0;//pop�� �������� ������ ����
+	atomic<uint32> _popCount = 0;//pop을 실행중인 쓰레드 개수
 
 
-	atomic<Node*> _pendingList; // �����Ǿ���� ����
+	atomic<Node*> _pendingList; // 삭제되어야할 노드들
 };

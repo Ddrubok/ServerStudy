@@ -12,29 +12,25 @@
     <ClCompile Include="GameServer.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="UserManger.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="AccountManger.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="Pch.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="ConcurrentQueue.cpp" />
-    <ClCompile Include="ConcurrentStack.cpp" />
+    <ClCompile Include="ConcurrentStack.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ConcurrentQueue.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UserManger.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="AccountManger.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="Pch.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ConcurrentQueue.h" />
-    <ClInclude Include="ConcurrentStack.h" />
+    <ClInclude Include="ConcurrentQueue.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="ConcurrentStack.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

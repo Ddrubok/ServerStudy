@@ -19,7 +19,7 @@ void Push()
 		int32 value = rand() % 100;
 		s.Push(value);
 
-		//this_thread::sleep_for(10ms);
+		this_thread::sleep_for(10ms);
 	}
 }
 
@@ -29,7 +29,7 @@ void Pop()
 	{
 
 		int32 data = 0;
-		if (s.TryPop(data))
+		if (s.TryPop(OUT data))
 			cout << data << endl;
 	}
 }
