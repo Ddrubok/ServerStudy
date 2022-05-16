@@ -42,128 +42,154 @@ private:
 };
 
 
+//template<typename T>
+//class LockFreeStack
+//{
+//	struct Node
+//	{
+//		Node(const T& value) :data(make_shared<T>(value)),next(nullptr)
+//		{
+//
+//		}
+//
+//		shared_ptr<T> data; 
+//		shared_ptr<Node> next;
+//
+//	};
+//
+//public:
+//	void Push(const T& value)
+//	{
+//
+//		shared_ptr<Node> node = make_shared<Node>(value);
+//
+//		node->next = std::atomic_load(&_head);
+//
+//		while (std::atomic_compare_exchange_weak(&_head, &node->next, node) == false)
+//		{
+//
+//		}
+//	}
+//
+//	shared_ptr<T> TryPop()
+//	{
+//		shared_ptr<Node> oldHead = std::atomic_load(&_head);
+//
+//		while (oldHead && std::atomic_compare_exchange_weak(&_head, &oldHead, oldHead->next) == false)
+//		{
+//
+//		}
+//
+//		if (oldHead == nullptr)
+//			return shared_ptr<T>();
+//
+//		return oldHead->data;
+//
+//	}
+//
+//	
+//
+//private:
+//	shared_ptr<Node> _head;
+//};
+
 template<typename T>
 class LockFreeStack
 {
+	struct Node;
+	struct CountedNodePtr
+	{
+		int32 externalCount = 0;
+		Node* ptr = nullptr;
+	};
+
 	struct Node
 	{
-		Node(const T& value) : data(make_shared<T>(value), next(nullptr)
+		Node(const T& value) :data(make_shared<T>(value))
 		{
 
 		}
 
 		shared_ptr<T> data;
-		shared_ptr<Node>next;
+		atomic<int32> internalCount = 0;
+		CountedNodePtr next;
 
 	};
+
+
 
 public:
 	void Push(const T& value)
 	{
-		Node* node = new Node(value);
-		node->next = _head;
+		CountedNodePtr node;
+		node.ptr = new Node(value);
+		node.externalCount = 1;
 
-		while (_head.compare_exchange_weak(node->next, node) == false)
+		node.ptr->next = _head;
+
+		while (_head.compare_exchange_weak(node.ptr->next, node) == false)
 		{
+
 		}
+
+
 	}
 
-	bool TryPop(T& value)
+	shared_ptr<T> TryPop()
 	{
-		++_popCount;
 
-		Node* oldHead = _head;
-
-
-		while (oldHead && _head.compare_exchange_weak(oldHead, oldHead->next)==false)
+		CountedNodePtr oldHead = _head;
+		while (true)
 		{
+			//참조권 획득
+			IncreaseHeadCount(oldHead);
 
-		}
+			//최소한 externalCount >=2 일테니 삭제 x (안전하게 접근할 수 있는)
 
-		if (oldHead == nullptr)
-		{
-			--_popCount;
-			return false;
-		}
-		else
-		{
-			value = oldHead->data;
+			Node* ptr = oldHead.ptr;
 
-			TryDelete(oldHead);
+			if (ptr == nullptr)
+				return shared_ptr<T>();
 
-			return true;
+			//소유권 흭득 (ptr->next 로 head를 바꿔치기 한 얘가 이김)
 
-		}
-	}
-
-	void TryDelete(Node* oldHead)
-	{
-		
-
-		if (_popCount == 1)
-		{
-			
-			Node* node = _pendingList.exchange(nullptr);
-
-			if (--_popCount == 0)
+			if (_head.compare_exchange_strong(oldHead, ptr->next))
 			{
-				
-				DeletNodes(node);
+				shared_ptr<T> res;
+				res.swap(ptr->data);
+				const int32 countIncrease = oldHead.externalCount - 2;
+
+				if (ptr->internalCount.fetch_add(countIncrease) == -countIncrease)
+					delete ptr;
+
+				return res;
 			}
-			else if(node)
+			else if (ptr->internalCount.fetch_sub(1) == 1)
 			{
-				ChainPendingNodeList(node);
+				//참조권은 얻었으나, 소유권은 실패 ->뒷수습은 내가한다.
+				delete ptr;
 			}
-
-			
-			delete oldHead;
 		}
-		else
+	}
+
+
+private:
+	void IncreaseHeadCount(CountedNodePtr& oldCounter)
+	{
+		while (true)
 		{
-			
-			ChainPendingNodeList(oldHead);
-			--_popCount;
+			CountedNodePtr newCounter = oldCounter;
+			newCounter.externalCount++;
+
+			if (_head.compare_exchange_strong(oldCounter, newCounter))
+			{
+				oldCounter.externalCount = newCounter.externalCount;
+				break;
+			}
 		}
-	}
 
-	void ChainPendingNodeList(Node* first, Node* last)
-	{
-		last->next = _pendingList;
-
-		while (_pendingList.compare_exchange_weak(last->next, first) == false)
-		{
-		}
-	}
-
-	void ChainPendingNodeList(Node* node)
-	{
-		Node* last = node;
-		while (last->next)
-			last = last->next;
-
-		ChainPendingNodeList(node, last);
-	}
-
-	void ChainPendingNode(Node* node)
-	{
-		ChainPendingNodeList(node, node);
-	}
-
-	static void DeletNodes(Node* node)
-	{
-		while (node)
-		{
-			Node* next = node->next;
-			delete node;
-			node = next;
-		}
 	}
 
 private:
-	atomic<Node*> _head;
-
-	atomic<uint32> _popCount = 0;//pop을 실행중인 쓰레드 개수
-
-
-	atomic<Node*> _pendingList; // 삭제되어야할 노드들
+	atomic<CountedNodePtr> _head;
 };
