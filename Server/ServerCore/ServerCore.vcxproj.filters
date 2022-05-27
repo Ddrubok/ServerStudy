@@ -1,14 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Network">
+      <UniqueIdentifier>{44015ff7-f5fe-4ecb-9510-ba792e92d6c2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Utils">
-      <UniqueIdentifier>{6c64499e-cba5-4316-b530-e610da5fb117}</UniqueIdentifier>
+      <UniqueIdentifier>{1c94faf8-d38f-44b3-b3f3-39ba3c6951e1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Main">
-      <UniqueIdentifier>{7fcb1429-f929-4956-972e-b9a3d9114809}</UniqueIdentifier>
+      <UniqueIdentifier>{c0b75513-7471-4500-a833-2626c5040f9c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Thread">
-      <UniqueIdentifier>{8be56ec4-85b2-4eae-99e7-59eca2b695b8}</UniqueIdentifier>
+      <UniqueIdentifier>{0a8a1a96-3bcc-4f5b-ac25-3388457fad31}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,10 +33,10 @@
     <ClInclude Include="CoreTLS.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="Lock.h">
+    <ClInclude Include="ThreadManager.h">
       <Filter>Thread</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadManager.h">
+    <ClInclude Include="Lock.h">
       <Filter>Thread</Filter>
     </ClInclude>
     <ClInclude Include="DeadLockProfiler.h">
@@ -53,10 +56,10 @@
     <ClCompile Include="CoreTLS.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="Lock.cpp">
+    <ClCompile Include="ThreadManager.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
-    <ClCompile Include="ThreadManager.cpp">
+    <ClCompile Include="Lock.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
     <ClCompile Include="DeadLockProfiler.cpp">
