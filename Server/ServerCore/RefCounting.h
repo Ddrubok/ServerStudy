@@ -1,27 +1,19 @@
 #pragma once
 
+/*---------------
+   RefCountable
+----------------*/
+
 class RefCountable
 {
 public:
-	RefCountable() : _refCount(1) 
-	{
+	RefCountable() : _refCount(1) { }
+	virtual ~RefCountable() { }
 
-	}
-	virtual ~RefCountable() 
-	{
+	int32 GetRefCount() { return _refCount; }
 
-	}
-
-	int32 GetRefCount() 
-	{ 
-		return _refCount;
-	}
-
-	int32 AddRef() 
-	{ 
-		return ++_refCount; 
-	}
-	int32 ReleseRefCount()
+	int32 AddRef() { return ++_refCount; }
+	int32 ReleaseRef()
 	{
 		int32 refCount = --_refCount;
 		if (refCount == 0)
@@ -35,44 +27,29 @@ protected:
 	atomic<int32> _refCount;
 };
 
+/*---------------
+   SharedPtr
+----------------*/
+
 template<typename T>
-class TSharedPtr 
+class TSharedPtr
 {
 public:
+	TSharedPtr() { }
+	TSharedPtr(T* ptr) { Set(ptr); }
 
-	TSharedPtr()
-	{
-
-	}
-
-	TSharedPtr(T* ptr)
-	{
-		Set(ptr);
-	}
-
-	TSharedPtr(const TSharedPtr& rhs)
-	{
-		Set(rhs._ptr);
-	}
-
-	TSharedPtr(TSharedPtr&& rhs)
-	{
-		_ptr = rhs._ptr;
-		rhs._ptr = nullptr;
-	}
-
+	// 복사
+	TSharedPtr(const TSharedPtr& rhs) { Set(rhs._ptr); }
+	// 이동
+	TSharedPtr(TSharedPtr&& rhs) { _ptr = rhs._ptr; rhs._ptr = nullptr; }
+	// 상속 관계 복사
 	template<typename U>
-	TSharedPtr(const TSharedPtr<U>& rhs)
-	{
-		Set(static_cast<T*>(rhs._ptr));
-	}
+	TSharedPtr(const TSharedPtr<U>& rhs) { Set(static_cast<T*>(rhs._ptr)); }
 
-	~TSharedPtr ()
-	{
-		Release();
-	}
+	~TSharedPtr() { Release(); }
 
 public:
+	// 복사 연산자
 	TSharedPtr& operator=(const TSharedPtr& rhs)
 	{
 		if (_ptr != rhs._ptr)
@@ -83,7 +60,8 @@ public:
 		return *this;
 	}
 
-	TSharedPtr& operator=(const TSharedPtr&& rhs)
+	// 이동 연산자
+	TSharedPtr& operator=(TSharedPtr&& rhs)
 	{
 		Release();
 		_ptr = rhs._ptr;
@@ -91,60 +69,18 @@ public:
 		return *this;
 	}
 
+	bool		operator==(const TSharedPtr& rhs) const { return _ptr == rhs._ptr; }
+	bool		operator==(T* ptr) const { return _ptr == ptr; }
+	bool		operator!=(const TSharedPtr& rhs) const { return _ptr != rhs._ptr; }
+	bool		operator!=(T* ptr) const { return _ptr != ptr; }
+	bool		operator<(const TSharedPtr& rhs) const { return _ptr < rhs._ptr; }
+	T*			operator*() { return _ptr; }
+	const T*	operator*() const { return _ptr; }
+				operator T* () const { return _ptr; }
+	T*			operator->() { return _ptr; }
+	const T*	operator->() const { return _ptr; }
 
-	bool operator == (const TSharedPtr& rhs)
-	{
-		return _ptr == rhs._ptr;
-	}
-
-	bool operator == (T* rhs)
-	{
-		return _ptr == rhs;
-	}
-
-	bool operator != (const TSharedPtr& rhs)
-	{
-		return _ptr != rhs._ptr;
-	}
-
-	bool operator != (T* rhs)
-	{
-		return _ptr != rhs;
-	}
-	
-	bool operator<(const TSharedPtr& rhs) const 
-	{
-		return _ptr < rhs._ptr;
-	}
-
-	T* operator*()
-	{
-		return _ptr;
-	}
-	const T* operator *()const
-	{
-		return _ptr;
-	}
-
-	operator T* () const
-	{
-		return _ptr;
-	}
-
-	T* operator->()
-	{
-		return _ptr;
-	}
-
-	const T* operator ->() const
-	{
-		return _ptr;
-	}
-
-	bool IsNull() 
-	{ 
-		return _ptr == nullptr;
-	}
+	bool IsNull() { return _ptr == nullptr; }
 
 private:
 	inline void Set(T* ptr)
@@ -165,6 +101,4 @@ private:
 
 private:
 	T* _ptr = nullptr;
-
 };
-
