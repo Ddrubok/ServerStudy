@@ -4,9 +4,9 @@
 #include "Memory.h"
 #include "DeadLockProfiler.h"
 
-ThreadManager* GThreadManager = nullptr;
-DeadLockProfiler* GDeadLockProfiler = nullptr;
-Memory* GMemory = nullptr;
+ThreadManager*		GThreadManager = nullptr;
+Memory*				GMemory = nullptr;
+DeadLockProfiler*	GDeadLockProfiler = nullptr;
 
 class CoreGlobal
 {
