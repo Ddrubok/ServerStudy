@@ -66,6 +66,32 @@ int main()
 		char ipAddress[16];
 		::inet_ntop(AF_INET, &clientAddr.sin_addr, ipAddress, sizeof(ipAddress));
 		cout << "Client Connect! IP= " << ipAddress << endl;
+
+
+		while (true)
+		{
+			char recvBuffer[1000];
+			int32 recvLen = ::recv(clientSocekt, recvBuffer, sizeof(recvBuffer), 0);
+
+			if (recvLen <= 0)
+			{
+				int errCode = ::WSAGetLastError();
+				cout << "Recv ErrorCode: " << errCode << endl;
+				return 0;
+			}
+
+			cout << "Recv Data! Data = " << recvBuffer << endl;
+			cout << "Recv Data! Len = " << recvLen << endl;
+
+			int32 resultCode = ::send(clientSocekt, recvBuffer, sizeof(recvBuffer), 0);
+
+			if (resultCode == SOCKET_ERROR)
+			{
+				int errCode = ::WSAGetLastError();
+				cout << "Send ErrorCode: " << errCode << endl;
+				return 0;
+			}
+		}
 	}
 	//윈도우 소켓 종료
 	::WSACleanup();
