@@ -12,6 +12,7 @@
 
 int main()
 {
+
 	SOCKET socket = SocketUtils::CreateSocket();
 	SocketUtils::BindAnyAddress(socket, 7777);
 	SocketUtils::Listen(socket);
