@@ -40,7 +40,6 @@ Type* xnew(Args&&... args)
 	return memory;
 }
 
-
 template<typename Type>
 void xdelete(Type* obj)
 {

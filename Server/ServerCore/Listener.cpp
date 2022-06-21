@@ -28,7 +28,6 @@ bool Listener::StartAccept(ServerServiceRef service)
 		return false;
 
 	_socket = SocketUtils::CreateSocket();
-	
 	if (_socket == INVALID_SOCKET)
 		return false;
 
@@ -78,10 +77,10 @@ void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
-	SessionRef session = _service->CreateSession();
+	SessionRef session = _service->CreateSession(); // Register IOCP
 
 	acceptEvent->Init();
-	acceptEvent->_session = session;
+	acceptEvent->session = session;
 
 	DWORD bytesReceived = 0;
 	if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer, 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
@@ -97,7 +96,7 @@ void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 
 void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 {
-	SessionRef session = acceptEvent->_session;
+	SessionRef session = acceptEvent->session;
 
 	if (false == SocketUtils::SetUpdateAcceptSocket(session->GetSocket(), _socket))
 	{
