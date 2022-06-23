@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "SendBuffer.h"
 
+/*----------------
+	SendBuffer
+-----------------*/
+
 SendBuffer::SendBuffer(int32 bufferSize)
 {
 	_buffer.resize(bufferSize);

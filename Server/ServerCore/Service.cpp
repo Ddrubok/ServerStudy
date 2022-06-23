@@ -58,8 +58,6 @@ ClientService::ClientService(NetAddress targetAddress, IocpCoreRef core, Session
 
 bool ClientService::Start()
 {
-	// TODO
-
 	if (CanStart() == false)
 		return false;
 
@@ -70,6 +68,7 @@ bool ClientService::Start()
 		if (session->Connect() == false)
 			return false;
 	}
+
 	return true;
 }
 

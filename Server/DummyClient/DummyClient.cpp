@@ -1,9 +1,9 @@
 ﻿#include "pch.h"
 #include "ThreadManager.h"
-#include <Service.h>
-#include <Session.h>
+#include "Service.h"
+#include "Session.h"
 
-char sendBuffer[] = "Hello World";
+char sendData[] = "Hello World";
 
 class ServerSession : public Session
 {
@@ -12,19 +12,26 @@ public:
 	{
 		cout << "~ServerSession" << endl;
 	}
+
 	virtual void OnConnected() override
 	{
 		cout << "Connected To Server" << endl;
-		Send((BYTE*)sendBuffer, sizeof(sendBuffer));
+
+		SendBufferRef sendBuffer = MakeShared<SendBuffer>(4096);
+		sendBuffer->CopyData(sendData, sizeof(sendData));
+		Send(sendBuffer);
 	}
 
 	virtual int32 OnRecv(BYTE* buffer, int32 len) override
 	{
-		// Echo
 		cout << "OnRecv Len = " << len << endl;
+
 		this_thread::sleep_for(1s);
 
-		Send((BYTE*)sendBuffer, sizeof(sendBuffer));
+		SendBufferRef sendBuffer = MakeShared<SendBuffer>(4096);
+		sendBuffer->CopyData(sendData, sizeof(sendData));
+		Send(sendBuffer);
+
 		return len;
 	}
 
@@ -47,18 +54,20 @@ int main()
 		NetAddress(L"127.0.0.1", 7777),
 		MakeShared<IocpCore>(),
 		MakeShared<ServerSession>, // TODO : SessionManager 등
-		1);
+		5);
+
+	ASSERT_CRASH(service->Start());
 
 	for (int32 i = 0; i < 2; i++)
 	{
 		GThreadManager->Launch([=]()
-		{
-			while (true)
 			{
-				service->GetIocpCore()->Dispatch();
-			}
-		});
+				while (true)
+				{
+					service->GetIocpCore()->Dispatch();
+				}
+			});
 	}
 
-	ASSERT_CRASH(service->Start());
+	GThreadManager->Join();
 }

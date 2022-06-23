@@ -38,9 +38,9 @@ public:
 	ConnectEvent() : IocpEvent(EventType::Connect) { }
 };
 
-/*----------------
-	DisConnectEvent
------------------*/
+/*--------------------
+	DisconnectEvent
+----------------------*/
 
 class DisconnectEvent : public IocpEvent
 {
@@ -79,7 +79,6 @@ class SendEvent : public IocpEvent
 {
 public:
 	SendEvent() : IocpEvent(EventType::Send) { }
-
-	// TEMP
-	vector<SendBufferRef> sendBuffers;
+	 
+	Vector<SendBufferRef> sendBuffers;
 };
