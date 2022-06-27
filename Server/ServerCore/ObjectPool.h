@@ -15,7 +15,8 @@ public:
 #else
 		Type* memory = static_cast<Type*>(MemoryHeader::AttachHeader(s_pool.Pop(), s_allocSize));
 #endif		
-		new(memory)Type(forward<Args>(args)...); 		return memory;
+		new(memory)Type(forward<Args>(args)...); // placement new
+		return memory;
 	}
 
 	static void Push(Type* obj)

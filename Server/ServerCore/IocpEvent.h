@@ -7,7 +7,8 @@ enum class EventType : uint8
 	Connect,
 	Disconnect,
 	Accept,
-		Recv,
+	//PreRecv,
+	Recv,
 	Send
 };
 

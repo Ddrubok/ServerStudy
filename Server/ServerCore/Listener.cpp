@@ -15,7 +15,8 @@ Listener::~Listener()
 
 	for (AcceptEvent* acceptEvent : _acceptEvents)
 	{
-		
+		// TODO
+
 		xdelete(acceptEvent);
 	}
 }
@@ -76,7 +77,8 @@ void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
-	SessionRef session = _service->CreateSession(); 
+	SessionRef session = _service->CreateSession(); // Register IOCP
+
 	acceptEvent->Init();
 	acceptEvent->session = session;
 
@@ -86,7 +88,8 @@ void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 		const int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
 		{
-						RegisterAccept(acceptEvent);
+			// 일단 다시 Accept 걸어준다
+			RegisterAccept(acceptEvent);
 		}
 	}
 }

@@ -41,7 +41,8 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 		case WAIT_TIMEOUT:
 			return false;
 		default:
-						IocpObjectRef iocpObject = iocpEvent->owner;
+			// TODO : ·Î±× Âï±â
+			IocpObjectRef iocpObject = iocpEvent->owner;
 			iocpObject->Dispatch(iocpEvent, numOfBytes);
 			break;
 		}
