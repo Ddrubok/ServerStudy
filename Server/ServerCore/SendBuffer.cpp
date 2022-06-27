@@ -66,17 +66,14 @@ SendBufferRef SendBufferManager::Open(uint32 size)
 {
 	if (LSendBufferChunk == nullptr)
 	{
-		LSendBufferChunk = Pop(); // WRITE_LOCK
-		LSendBufferChunk->Reset();
+		LSendBufferChunk = Pop(); 		LSendBufferChunk->Reset();
 	}		
 
 	ASSERT_CRASH(LSendBufferChunk->IsOpen() == false);
 
-	// 다 썼으면 버리고 새거로 교체
-	if (LSendBufferChunk->FreeSize() < size)
+		if (LSendBufferChunk->FreeSize() < size)
 	{
-		LSendBufferChunk = Pop(); // WRITE_LOCK
-		LSendBufferChunk->Reset();
+		LSendBufferChunk = Pop(); 		LSendBufferChunk->Reset();
 	}
 
 	cout << "FREE : " << LSendBufferChunk->FreeSize() << endl;

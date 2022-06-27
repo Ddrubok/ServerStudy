@@ -19,8 +19,7 @@ Service::~Service()
 
 void Service::CloseService()
 {
-	// TODO
-}
+	}
 
 SessionRef Service::CreateSession()
 {
@@ -95,7 +94,6 @@ bool ServerService::Start()
 
 void ServerService::CloseService()
 {
-	// TODO
-
+	
 	Service::CloseService();
 }
