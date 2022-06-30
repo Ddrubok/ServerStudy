@@ -16,4 +16,3 @@ void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 		break;
 	}
 }
-
