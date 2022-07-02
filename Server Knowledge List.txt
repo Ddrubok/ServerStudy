@@ -44,3 +44,4 @@ LocpCore
 Packet Helper
 Packet Serialization
 Protobuf
+Packet Automation
