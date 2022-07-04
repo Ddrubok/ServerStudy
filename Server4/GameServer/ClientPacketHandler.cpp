@@ -12,16 +12,24 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 	return false;
 }
 
-bool Handle_C_TEST(PacketSessionRef& session, Protocol::C_TEST& pkt)
+bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 {
-	// TODO
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	Protocol::S_LOGIN loginPkt;
+	loginPkt.set_sucess(true);
+
+
 
 	return true;
 }
 
-bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
+bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 {
-	// TODO
+	return true;
+}
 
+bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
+{
 	return true;
 }

@@ -1,5 +1,4 @@
-﻿Struct.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
-Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
+﻿Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
   #pragma once
   #include "Protocol.pb.h"
   
@@ -8,16 +7,19 @@ Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
   
   enum : uint16
   {
-  	PKT_C_TEST = 1000,
-  	PKT_C_MOVE = 1001,
-  	PKT_S_TEST = 1002,
-  	PKT_S_LOGIN = 1003,
+  	PKT_C_LOGIN = 1000,
+  	PKT_S_LOGIN = 1001,
+  	PKT_C_ENTER_GAME = 1002,
+  	PKT_S_ENTER_GAME = 1003,
+  	PKT_C_CHAT = 1004,
+  	PKT_S_CHAT = 1005,
   };
   
   // Custom Handlers
   bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
-  bool Handle_C_TEST(PacketSessionRef& session, Protocol::C_TEST& pkt);
-  bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt);
+  bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt);
+  bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt);
+  bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt);
   
   class ClientPacketHandler
   {
@@ -26,8 +28,9 @@ Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
   	{
   		for (int32 i = 0; i < UINT16_MAX; i++)
   			GPacketHandler[i] = Handle_INVALID;
-  		GPacketHandler[PKT_C_TEST] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_TEST>(Handle_C_TEST, session, buffer, len); };
-  		GPacketHandler[PKT_C_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MOVE>(Handle_C_MOVE, session, buffer, len); };
+  		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LOGIN>(Handle_C_LOGIN, session, buffer, len); };
+  		GPacketHandler[PKT_C_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_GAME>(Handle_C_ENTER_GAME, session, buffer, len); };
+  		GPacketHandler[PKT_C_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CHAT>(Handle_C_CHAT, session, buffer, len); };
   	}
   
   	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -35,8 +38,9 @@ Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
   		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
   		return GPacketHandler[header->id](session, buffer, len);
   	}
-  	static SendBufferRef MakeSendBuffer(Protocol::S_TEST& pkt) { return MakeSendBuffer(pkt, PKT_S_TEST); }
   	static SendBufferRef MakeSendBuffer(Protocol::S_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_S_LOGIN); }
+  	static SendBufferRef MakeSendBuffer(Protocol::S_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_S_ENTER_GAME); }
+  	static SendBufferRef MakeSendBuffer(Protocol::S_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); }
   
   private:
   	template<typename PacketType, typename ProcessFunc>
@@ -73,16 +77,19 @@ Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
   
   enum : uint16
   {
-  	PKT_C_TEST = 1000,
-  	PKT_C_MOVE = 1001,
-  	PKT_S_TEST = 1002,
-  	PKT_S_LOGIN = 1003,
+  	PKT_C_LOGIN = 1000,
+  	PKT_S_LOGIN = 1001,
+  	PKT_C_ENTER_GAME = 1002,
+  	PKT_S_ENTER_GAME = 1003,
+  	PKT_C_CHAT = 1004,
+  	PKT_S_CHAT = 1005,
   };
   
   // Custom Handlers
   bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
-  bool Handle_S_TEST(PacketSessionRef& session, Protocol::S_TEST& pkt);
   bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt);
+  bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt);
+  bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt);
   
   class ServerPacketHandler
   {
@@ -91,8 +98,9 @@ Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
   	{
   		for (int32 i = 0; i < UINT16_MAX; i++)
   			GPacketHandler[i] = Handle_INVALID;
-  		GPacketHandler[PKT_S_TEST] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_TEST>(Handle_S_TEST, session, buffer, len); };
   		GPacketHandler[PKT_S_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_LOGIN>(Handle_S_LOGIN, session, buffer, len); };
+  		GPacketHandler[PKT_S_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_ENTER_GAME>(Handle_S_ENTER_GAME, session, buffer, len); };
+  		GPacketHandler[PKT_S_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_CHAT>(Handle_S_CHAT, session, buffer, len); };
   	}
   
   	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -100,8 +108,9 @@ Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
   		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
   		return GPacketHandler[header->id](session, buffer, len);
   	}
-  	static SendBufferRef MakeSendBuffer(Protocol::C_TEST& pkt) { return MakeSendBuffer(pkt, PKT_C_TEST); }
-  	static SendBufferRef MakeSendBuffer(Protocol::C_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_C_MOVE); }
+  	static SendBufferRef MakeSendBuffer(Protocol::C_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_C_LOGIN); }
+  	static SendBufferRef MakeSendBuffer(Protocol::C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C_ENTER_GAME); }
+  	static SendBufferRef MakeSendBuffer(Protocol::C_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
   
   private:
   	template<typename PacketType, typename ProcessFunc>
@@ -167,4 +176,43 @@ Protocol.proto(4,1): warning G7CF62709: Import Enum.proto is unused.
   GameServer.cpp
   GameSession.cpp
   코드를 생성하고 있습니다...
-  GameServer.vcxproj -> C:\Rookiss\CPP_Server\Server\Binary\Debug\GameServer.exe
+libprotobufd.lib(any_lite.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(any_lite.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(arena.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(arena.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(arenastring.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(arenastring.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(extension_set.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(extension_set.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(generated_message_util.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(generated_message_util.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(implicit_weak_message.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(implicit_weak_message.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(coded_stream.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(coded_stream.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(io_win32.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(io_win32.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(strtod.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(strtod.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(zero_copy_stream.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(zero_copy_stream.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(zero_copy_stream_impl.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(zero_copy_stream_impl.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(zero_copy_stream_impl_lite.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(zero_copy_stream_impl_lite.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(map.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(map.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(message_lite.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(message_lite.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(parse_context.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(parse_context.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(repeated_field.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(repeated_field.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(common.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(common.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(int128.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(int128.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(status.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(status.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(stringpiece.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(stringpiece.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(stringprintf.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(stringprintf.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(structurally_valid.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(structurally_valid.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(strutil.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(strutil.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(wire_format_lite.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(wire_format_lite.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(any.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(any.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(descriptor.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(descriptor.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(descriptor.pb.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(descriptor.pb.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(descriptor_database.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(descriptor_database.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(dynamic_message.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(dynamic_message.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(extension_set_heavy.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(extension_set_heavy.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(generated_message_reflection.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(generated_message_reflection.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(tokenizer.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(tokenizer.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(map_field.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(map_field.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(message.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(message.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(reflection_ops.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(reflection_ops.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(substitute.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(substitute.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(text_format.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(text_format.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(unknown_field_set.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(unknown_field_set.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+libprotobufd.lib(wire_format.obj) : warning LNK4099: 'libprotobufd.pdb' PDB를 'libprotobufd.lib(wire_format.obj)' 또는 'C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\libprotobufd.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+  GameServer.vcxproj -> C:\Users\yadom\Desktop\DS\trunk\Server4\Binary\Debug\GameServer.exe
