@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "GameSession.h"
 
+Room GRoom;
+
 void Room::Enter(PlayerRef player)
 {
 	WRITE_LOCK;

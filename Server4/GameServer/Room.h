@@ -11,3 +11,5 @@ private:
 	map<uint64, PlayerRef> _players;
 };
 
+extern Room GRoom;
+

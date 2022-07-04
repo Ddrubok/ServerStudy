@@ -14,15 +14,30 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 {
+	if (pkt.sucess() == false)
+		return true;
+
+	if (pkt.players().size() == 0)
+	{
+
+	}
+
+	Protocol::C_ENTER_GAME enterGamePkt;
+	enterGamePkt.set_playerindex(0);
+	auto sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+	session->Send(sendBuffer);
+
 	return true;
 }
 
 bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 {
-	return false;
+
+	return true;
 }
 
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
 {
-	return false;
+	std::cout << pkt.msg() << endl;
+	return true;
 }
