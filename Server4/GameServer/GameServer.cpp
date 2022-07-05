@@ -8,9 +8,21 @@
 #include "ClientPacketHandler.h"
 #include <tchar.h>
 #include "Protocol.pb.h"
+#include "Job.h"
 
 int main()
 {
+	//Test Job
+
+	{
+		HealJob healJob;
+		healJob._target = 1;
+		healJob._healValue = 10;
+
+		healJob.Execute();
+	}
+
+	//Job
 	ClientPacketHandler::Init();
 
 	ServerServiceRef service = MakeShared<ServerService>(
