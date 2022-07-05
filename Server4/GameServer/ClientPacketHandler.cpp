@@ -19,9 +19,15 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
-	Protocol::S_LOGIN loginPkt;
-	loginPkt.set_sucess(true);
+	// TODO : Validation 체크
 
+	Protocol::S_LOGIN loginPkt;
+	loginPkt.set_success(true);
+
+	// DB에서 플레이 정보를 긁어온다
+	// GameSession에 플레이 정보를 저장 (메모리)
+
+	// ID 발급 (DB 아이디가 아니고, 인게임 아이디)
 	static Atomic<uint64> idGenerator = 1;
 
 	{
@@ -34,6 +40,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 		playerRef->name = player->name();
 		playerRef->type = player->playertype();
 		playerRef->ownerSession = gameSession;
+		
 		gameSession->_players.push_back(playerRef);
 	}
 
@@ -47,12 +54,12 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 		playerRef->name = player->name();
 		playerRef->type = player->playertype();
 		playerRef->ownerSession = gameSession;
+
 		gameSession->_players.push_back(playerRef);
 	}
 
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(loginPkt);
 	session->Send(sendBuffer);
-
 
 	return true;
 }
@@ -62,12 +69,14 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
 	uint64 index = pkt.playerindex();
+	// TODO : Validation
 
-	PlayerRef player = gameSession->_players[index];
-	GRoom.Enter(player);
+	PlayerRef player = gameSession->_players[index]; // READ_ONLY?
+
+	GRoom.PushJob(MakeShared<EnterJob>(GRoom, player));
 
 	Protocol::S_ENTER_GAME enterGamePkt;
-	enterGamePkt.set_sucess(true);
+	enterGamePkt.set_success(true);
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
 	player->ownerSession->Send(sendBuffer);
 
@@ -82,7 +91,7 @@ bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 	chatPkt.set_msg(pkt.msg());
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(chatPkt);
 
-	GRoom.Broadcast(sendBuffer);
+	GRoom.PushJob(MakeShared<BroadcastJob>(GRoom, sendBuffer));
 
 	return true;
 }

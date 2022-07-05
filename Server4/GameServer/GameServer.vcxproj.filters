@@ -11,7 +11,7 @@
       <UniqueIdentifier>{603496b5-138a-4725-951a-b0a8ee8dfe85}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameContents">
-      <UniqueIdentifier>{fb873e4f-3208-4906-8eae-781147c70897}</UniqueIdentifier>
+      <UniqueIdentifier>{87ecb0c8-a463-4f2f-8da3-49a7bcdfb77a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +45,9 @@
     <ClCompile Include="Room.cpp">
       <Filter>GameContents</Filter>
     </ClCompile>
+    <ClCompile Include="Job.cpp">
+      <Filter>GameContents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -68,10 +71,13 @@
     <ClInclude Include="Enum.pb.h">
       <Filter>Protocol</Filter>
     </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>GameContents</Filter>
+    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>GameContents</Filter>
     </ClInclude>
-    <ClInclude Include="Room.h">
+    <ClInclude Include="Job.h">
       <Filter>GameContents</Filter>
     </ClInclude>
   </ItemGroup>

@@ -315,7 +315,7 @@ class S_LOGIN final :
 
   enum : int {
     kPlayersFieldNumber = 2,
-    kSucessFieldNumber = 1,
+    kSuccessFieldNumber = 1,
   };
   // repeated .Protocol.Player players = 2;
   int players_size() const;
@@ -335,13 +335,13 @@ class S_LOGIN final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::Player >&
       players() const;
 
-  // bool sucess = 1;
-  void clear_sucess();
-  bool sucess() const;
-  void set_sucess(bool value);
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
   private:
-  bool _internal_sucess() const;
-  void _internal_set_sucess(bool value);
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_LOGIN)
@@ -352,7 +352,7 @@ class S_LOGIN final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::Player > players_;
-  bool sucess_;
+  bool success_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -598,15 +598,15 @@ class S_ENTER_GAME final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kSucessFieldNumber = 1,
+    kSuccessFieldNumber = 1,
   };
-  // bool sucess = 1;
-  void clear_sucess();
-  bool sucess() const;
-  void set_sucess(bool value);
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
   private:
-  bool _internal_sucess() const;
-  void _internal_set_sucess(bool value);
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_ENTER_GAME)
@@ -616,7 +616,7 @@ class S_ENTER_GAME final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  bool sucess_;
+  bool success_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -920,24 +920,24 @@ class S_CHAT final :
 
 // S_LOGIN
 
-// bool sucess = 1;
-inline void S_LOGIN::clear_sucess() {
-  sucess_ = false;
+// bool success = 1;
+inline void S_LOGIN::clear_success() {
+  success_ = false;
 }
-inline bool S_LOGIN::_internal_sucess() const {
-  return sucess_;
+inline bool S_LOGIN::_internal_success() const {
+  return success_;
 }
-inline bool S_LOGIN::sucess() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_LOGIN.sucess)
-  return _internal_sucess();
+inline bool S_LOGIN::success() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_LOGIN.success)
+  return _internal_success();
 }
-inline void S_LOGIN::_internal_set_sucess(bool value) {
+inline void S_LOGIN::_internal_set_success(bool value) {
   
-  sucess_ = value;
+  success_ = value;
 }
-inline void S_LOGIN::set_sucess(bool value) {
-  _internal_set_sucess(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_LOGIN.sucess)
+inline void S_LOGIN::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_LOGIN.success)
 }
 
 // repeated .Protocol.Player players = 2;
@@ -1004,24 +1004,24 @@ inline void C_ENTER_GAME::set_playerindex(::PROTOBUF_NAMESPACE_ID::uint64 value)
 
 // S_ENTER_GAME
 
-// bool sucess = 1;
-inline void S_ENTER_GAME::clear_sucess() {
-  sucess_ = false;
+// bool success = 1;
+inline void S_ENTER_GAME::clear_success() {
+  success_ = false;
 }
-inline bool S_ENTER_GAME::_internal_sucess() const {
-  return sucess_;
+inline bool S_ENTER_GAME::_internal_success() const {
+  return success_;
 }
-inline bool S_ENTER_GAME::sucess() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_ENTER_GAME.sucess)
-  return _internal_sucess();
+inline bool S_ENTER_GAME::success() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ENTER_GAME.success)
+  return _internal_success();
 }
-inline void S_ENTER_GAME::_internal_set_sucess(bool value) {
+inline void S_ENTER_GAME::_internal_set_success(bool value) {
   
-  sucess_ = value;
+  success_ = value;
 }
-inline void S_ENTER_GAME::set_sucess(bool value) {
-  _internal_set_sucess(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_ENTER_GAME.sucess)
+inline void S_ENTER_GAME::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_ENTER_GAME.success)
 }
 
 // -------------------------------------------------------------------
