@@ -10,40 +10,47 @@
 #include "Protocol.pb.h"
 #include "Job.h"
 #include "Room.h"
+#include "Player.h"
+#include <functional>
 
-void HealByValue(int64 target, int32 value)
+void HelloWorld(int32 a, int32 b)
 {
-	cout << target << "한테 힐" << value << "만큼 줌" << endl;
+	std::cout << "hello world" << std::endl;
 }
 
-class Knight
+class Knight : public enable_shared_from_this<Knight>
 {
 public:
 	void HealMe(int32 value)
 	{
+		_hp += value;
 		cout << "HealMe! " << value << endl;
 	}
+
+	void Test()
+	{
+		auto job = [self = shared_from_this()]()
+		{
+			self->HealMe(self->_hp);
+		};
+	}
+
+private:
+	int32 _hp = 100;
 };
 
 int main()
 {
-	auto tup = std::tuple<int32, int32>(1, 2);
-	auto val0 = std::get<0>(tup);
-	auto val1 = std::get<1>(tup);
-
-	auto s = gen_seq<3>();
-					
-		{
-		FuncJob<void, int64, int32> job(HealByValue, 100, 10);
-		job.Execute();
-	}
+	PlayerRef player = make_shared<Player>();
+	std::function<void(void)> func = [self= GRoom,&player]()
 	{
-		Knight k1;
-		MemberJob job2(&k1, &Knight::HealMe, 10);
-		job2.Execute();
-	}
+		HelloWorld(1, 2);
+		self->Enter(player);
+	};
 
-	
+
+	func();
+
 	ClientPacketHandler::Init();
 
 	ServerServiceRef service = MakeShared<ServerService>(
@@ -66,7 +73,7 @@ int main()
 
 	while (true)
 	{
-		GRoom.FlushJob();
+		GRoom->FlushJob();
 		this_thread::sleep_for(1ms);
 	}
 
