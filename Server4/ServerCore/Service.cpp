@@ -19,7 +19,8 @@ Service::~Service()
 
 void Service::CloseService()
 {
-	}
+	// TODO
+}
 
 void Service::Broadcast(SendBufferRef sendBuffer)
 {
@@ -103,6 +104,7 @@ bool ServerService::Start()
 
 void ServerService::CloseService()
 {
-	
+	// TODO
+
 	Service::CloseService();
 }

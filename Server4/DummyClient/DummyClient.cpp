@@ -27,16 +27,19 @@ public:
 		PacketSessionRef session = GetPacketSessionRef();
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
-				ServerPacketHandler::HandlePacket(session, buffer, len);
+		// TODO : packetId 대역 체크
+		ServerPacketHandler::HandlePacket(session, buffer, len);
 	}
 
 	virtual void OnSend(int32 len) override
 	{
-			}
+		//cout << "OnSend Len = " << len << endl;
+	}
 
 	virtual void OnDisconnected() override
 	{
-			}
+		//cout << "Disconnected" << endl;
+	}
 };
 
 int main()
@@ -48,7 +51,8 @@ int main()
 	ClientServiceRef service = MakeShared<ClientService>(
 		NetAddress(L"127.0.0.1", 7777),
 		MakeShared<IocpCore>(),
-		MakeShared<ServerSession>,100);
+		MakeShared<ServerSession>, // TODO : SessionManager 등
+		100);
 
 	ASSERT_CRASH(service->Start());
 
