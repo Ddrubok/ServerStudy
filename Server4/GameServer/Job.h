@@ -1,6 +1,5 @@
 #pragma once
 
-// C++11 apply
 template<int... Remains>
 struct seq
 {};
@@ -37,7 +36,6 @@ void xapply_helper(T* obj, F func, seq<ls...>, std::tuple<Args...>& tup)
 	(obj->*func)(std::get<ls>(tup)...);
 }
 
-// ÇÔ¼öÀÚ (Functor)
 class IJob
 {
 public:
@@ -57,8 +55,7 @@ public:
 
 	virtual void Execute() override
 	{
-		//std::apply(_func, _tuple); // C++17
-		xapply(_func, _tuple);
+				xapply(_func, _tuple);
 	}
 
 private:
@@ -79,8 +76,7 @@ public:
 
 	virtual void Execute() override
 	{
-		//std::apply(_func, _tuple); // C++17
-		xapply(_obj, _func, _tuple);
+				xapply(_obj, _func, _tuple);
 	}
 
 private:
@@ -88,7 +84,6 @@ private:
 	FuncType	_func;
 	std::tuple<Args...> _tuple;
 };
-/// /////////////
 
 
 

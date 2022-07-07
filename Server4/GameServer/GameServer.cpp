@@ -32,14 +32,8 @@ int main()
 	auto val1 = std::get<1>(tup);
 
 	auto s = gen_seq<3>();
-	// gen_seq<3>
-	// : gen_seq<2, 2>
-	// : gen_seq<1, 1, 2>
-	// : gen_seq<0, 0, 1, 2>
-	// : seq<0, 1, 2>
-
-	// TEST JOB
-	{
+					
+		{
 		FuncJob<void, int64, int32> job(HealByValue, 100, 10);
 		job.Execute();
 	}
@@ -49,15 +43,13 @@ int main()
 		job2.Execute();
 	}
 
-	// JOB
-
+	
 	ClientPacketHandler::Init();
 
 	ServerServiceRef service = MakeShared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
 		MakeShared<IocpCore>(),
-		MakeShared<GameSession>, // TODO : SessionManager 등
-		100);
+		MakeShared<GameSession>, 		100);
 
 	ASSERT_CRASH(service->Start());
 
