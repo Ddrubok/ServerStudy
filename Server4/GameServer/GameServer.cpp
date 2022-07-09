@@ -12,6 +12,23 @@
 #include "Room.h"
 #include "Player.h"
 
+enum
+{
+	WORKER_TICK = 64
+};
+
+void DoWorkerJob(ServerServiceRef& service)
+{
+	while (true)
+	{
+		LEndTickCount = ::GetTickCount64() + WORKER_TICK;
+
+		service->GetIocpCore()->Dispatch(10);
+
+		ThreadManager::DoGlobalQueueWork();
+	}
+}
+
 int main()
 {
 	ClientPacketHandler::Init();
@@ -26,14 +43,12 @@ int main()
 
 	for (int32 i = 0; i < 5; i++)
 	{
-		GThreadManager->Launch([=]()
-			{
-				while (true)
-				{
-					service->GetIocpCore()->Dispatch();
-				}				
-			});
+		GThreadManager->Launch([&service]()
+		{
+			DoWorkerJob(service);
+		});
 	}
 
+	DoWorkerJob(service);
 	GThreadManager->Join();
 }
