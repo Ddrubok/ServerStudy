@@ -6,7 +6,7 @@
 	JobQueue
 ----------------*/
 
-void JobQueue::Push(JobRef&& job)
+void JobQueue::Push(JobRef job, bool pushOnly)
 {
 	const int32 prevCount = _jobCount.fetch_add(1);
 	_jobs.Push(job); // WRITE_LOCK
@@ -14,7 +14,7 @@ void JobQueue::Push(JobRef&& job)
 	// 첫번째 Job을 넣은 쓰레드가 실행까지 담당
 	if (prevCount == 0)
 	{
-		if (LCurrentJobQueue == nullptr)
+		if (LCurrentJobQueue == nullptr &&pushOnly==false)
 		{
 			Execute();
 		}
