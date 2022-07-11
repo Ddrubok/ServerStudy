@@ -2,30 +2,27 @@
 #include "JobQueue.h"
 #include "GlobalQueue.h"
 
-/*---------------
+/*--------------
 	JobQueue
-----------------*/
+---------------*/
 
 void JobQueue::Push(JobRef job, bool pushOnly)
 {
 	const int32 prevCount = _jobCount.fetch_add(1);
-	_jobs.Push(job); // WRITE_LOCK
-
-	// 첫번째 Job을 넣은 쓰레드가 실행까지 담당
-	if (prevCount == 0)
+	_jobs.Push(job); 
+		if (prevCount == 0)
 	{
-		if (LCurrentJobQueue == nullptr &&pushOnly==false)
+				if (LCurrentJobQueue == nullptr && pushOnly == false)
 		{
 			Execute();
 		}
 		else
 		{
-			GGlobalQueue->Push(shared_from_this());
+						GGlobalQueue->Push(shared_from_this());
 		}
 	}
 }
 
-// 1) 일감이 너~무 몰리면?
 void JobQueue::Execute()
 {
 	LCurrentJobQueue = this;
@@ -39,8 +36,7 @@ void JobQueue::Execute()
 		for (int32 i = 0; i < jobCount; i++)
 			jobs[i]->Execute();
 
-		// 남은 일감이 0개라면 종료
-		if (_jobCount.fetch_sub(jobCount) == jobCount)
+				if (_jobCount.fetch_sub(jobCount) == jobCount)
 		{
 			LCurrentJobQueue = nullptr;
 			return;
@@ -50,9 +46,8 @@ void JobQueue::Execute()
 		if (now >= LEndTickCount)
 		{
 			LCurrentJobQueue = nullptr;
-
-			GGlobalQueue->Push(shared_from_this());
+						GGlobalQueue->Push(shared_from_this());
 			break;
-		}
+		}			
 	}
 }

@@ -16,9 +16,7 @@ void GameSession::OnDisconnected()
 	if (_currentPlayer)
 	{
 		if (auto room = _room.lock())
-		{
 			room->DoAsync(&Room::Leave, _currentPlayer);
-		}
 	}
 
 	_currentPlayer = nullptr;
@@ -30,8 +28,7 @@ void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 	PacketSessionRef session = GetPacketSessionRef();
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
-	// TODO : packetId 대역 체크
-	ClientPacketHandler::HandlePacket(session, buffer, len);
+		ClientPacketHandler::HandlePacket(session, buffer, len);
 }
 
 void GameSession::OnSend(int32 len)

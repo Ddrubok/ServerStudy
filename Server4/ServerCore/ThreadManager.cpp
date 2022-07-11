@@ -10,8 +10,7 @@
 
 ThreadManager::ThreadManager()
 {
-	// Main Thread
-	InitTLS();
+		InitTLS();
 }
 
 ThreadManager::~ThreadManager()
@@ -65,9 +64,7 @@ void ThreadManager::DoGlobalQueueWork()
 			break;
 
 		jobQueue->Execute();
-
 	}
-	
 }
 
 void ThreadManager::DistributeReservedJobs()

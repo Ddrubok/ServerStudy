@@ -2,6 +2,10 @@
 #include "JobTimer.h"
 #include "JobQueue.h"
 
+/*--------------
+	JobTimer
+---------------*/
+
 void JobTimer::Reserve(uint64 tickAfter, weak_ptr<JobQueue> owner, JobRef job)
 {
 	const uint64 executeTick = ::GetTickCount64() + tickAfter;
@@ -14,12 +18,14 @@ void JobTimer::Reserve(uint64 tickAfter, weak_ptr<JobQueue> owner, JobRef job)
 
 void JobTimer::Distribute(uint64 now)
 {
-	if(_distributing.exchange(true)==true)
+		if (_distributing.exchange(true) == true)
 		return;
 
 	Vector<TimerItem> items;
+
 	{
 		WRITE_LOCK;
+
 		while (_items.empty() == false)
 		{
 			const TimerItem& timerItem = _items.top();
@@ -28,19 +34,18 @@ void JobTimer::Distribute(uint64 now)
 
 			items.push_back(timerItem);
 			_items.pop();
-
-		}
-
-		for (TimerItem& item : items)
-		{
-			if (JobQueueRef owner = item.jobData->owner.lock())
-				owner->Push(item.jobData->job);
-
-			ObjectPool<JobData>::Push(item.jobData);
 		}
 	}
-	
-	_distributing.store(false);
+
+	for (TimerItem& item : items)
+	{
+		if (JobQueueRef owner = item.jobData->owner.lock())
+			owner->Push(item.jobData->job);
+
+		ObjectPool<JobData>::Push(item.jobData);
+	}
+
+		_distributing.store(false);
 }
 
 void JobTimer::Clear()
