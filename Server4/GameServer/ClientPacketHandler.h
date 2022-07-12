@@ -14,6 +14,7 @@ enum : uint16
 	PKT_S_CHAT = 1005,
 };
 
+// Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt);
 bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt);
