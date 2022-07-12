@@ -11,6 +11,7 @@ enum : uint16
 {%- endfor %}
 };
 
+// Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 
 {%- for pkt in parser.recv_pkt %}
