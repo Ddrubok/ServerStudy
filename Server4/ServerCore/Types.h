@@ -19,6 +19,7 @@ using CondVar = std::condition_variable;
 using UniqueLock = std::unique_lock<std::mutex>;
 using LockGuard = std::lock_guard<std::mutex>;
 
+// shared_ptr
 
 #define USING_SHARED_PTR(name)	using name##Ref = std::shared_ptr<class name>;
 

@@ -38,15 +38,19 @@ public:
 	TSharedPtr() { }
 	TSharedPtr(T* ptr) { Set(ptr); }
 
-		TSharedPtr(const TSharedPtr& rhs) { Set(rhs._ptr); }
-		TSharedPtr(TSharedPtr&& rhs) { _ptr = rhs._ptr; rhs._ptr = nullptr; }
-		template<typename U>
+	// 복사
+	TSharedPtr(const TSharedPtr& rhs) { Set(rhs._ptr); }
+	// 이동
+	TSharedPtr(TSharedPtr&& rhs) { _ptr = rhs._ptr; rhs._ptr = nullptr; }
+	// 상속 관계 복사
+	template<typename U>
 	TSharedPtr(const TSharedPtr<U>& rhs) { Set(static_cast<T*>(rhs._ptr)); }
 
 	~TSharedPtr() { Release(); }
 
 public:
-		TSharedPtr& operator=(const TSharedPtr& rhs)
+	// 복사 연산자
+	TSharedPtr& operator=(const TSharedPtr& rhs)
 	{
 		if (_ptr != rhs._ptr)
 		{
@@ -56,7 +60,8 @@ public:
 		return *this;
 	}
 
-		TSharedPtr& operator=(TSharedPtr&& rhs)
+	// 이동 연산자
+	TSharedPtr& operator=(TSharedPtr&& rhs)
 	{
 		Release();
 		_ptr = rhs._ptr;
