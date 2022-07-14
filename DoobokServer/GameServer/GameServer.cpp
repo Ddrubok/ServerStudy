@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "DBConnectionPool.h"
 #include "DBBind.h"
+#include <XmlParser.h>
 
 enum
 {
