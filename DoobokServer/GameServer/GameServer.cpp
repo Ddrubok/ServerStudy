@@ -40,9 +40,9 @@ int main()
 	
 	ASSERT_CRASH(GDBConnectionPool->Connect(1, L"Driver={SQL Server Native Client 11.0};Server=(localdb)\\MSSQLLocalDB;Database=ServerDb;Trusted_Connection=Yes;"));
 
-	DBConnection* dbConn = GDBConnectionPool->Pop();
+	/*DBConnection* dbConn = GDBConnectionPool->Pop();
 	DBSynchronizer dbSync(*dbConn);
-	dbSync.Synchronize(L"GameDB.xml");
+	dbSync.Synchronize(L"GameDB.xml");*/
 
 	ClientPacketHandler::Init();
 
