@@ -54,4 +54,4 @@ Procedure Generator
 How to connect server to Unreal Engine
 Server Pause
 Unreal Animation
-스테이트 머신
+State Machine
